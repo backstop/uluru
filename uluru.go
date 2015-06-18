@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 func main() {
@@ -24,7 +25,12 @@ func main() {
 func prettyString(vals url.Values) string {
 	out := ""
 	for val := range vals {
-		out = out + val + "\t:\t" + vals.Get(val) + "\n"
+		durval, err := time.ParseDuration(vals.Get(val))
+		if err == nil {
+			out = out + val + "\t:\t" + durval.String() + "\n"
+		} else {
+			out = out + val + "\t:\t" + vals.Get(val) + "\n"
+		}
 	}
 	return out
 }
