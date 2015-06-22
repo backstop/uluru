@@ -1,17 +1,23 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
-	"time"
 )
 
 func main() {
 
 	http.HandleFunc("/beacon/", func(w http.ResponseWriter, req *http.Request) {
-		params := req.URL.Query()
-		log.Println(prettyString(params))
+
+		data, _ := ioutil.ReadAll(req.Body)
+
+		ln := len(data)
+		method := req.Method
+
+		dataStr := string(data)
+		log.Printf("Got request. %d bytes. Method %s. Data: \n%s\n", ln, method, dataStr)
+
 		w.Write([]byte(""))
 	})
 
@@ -20,17 +26,4 @@ func main() {
 		log.Println(err.Error())
 	}
 
-}
-
-func prettyString(vals url.Values) string {
-	out := ""
-	for val := range vals {
-		durval, err := time.ParseDuration(vals.Get(val))
-		if err == nil {
-			out = out + val + "\t:\t" + durval.String() + "\n"
-		} else {
-			out = out + val + "\t:\t" + vals.Get(val) + "\n"
-		}
-	}
-	return out
 }

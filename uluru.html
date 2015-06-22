@@ -11,7 +11,16 @@
 
 		Now I'll require a large image from a remote server so it takes a little bit of time to load.
 
-		<img src="http://agocs.smugmug.com/Other/Sprouts-photos/i-x5838dj/0/X3/3288023238_456337c3d1_o-X3.jpg">
+		<img id = "placekitten">
+
+		<script type="text/javascript">
+			var basekitten = "https://placekitten.com/";
+			var w = Math.floor(Math.random() * 5000);
+			var h = Math.floor(Math.random() * 5000);
+			var kitten = basekitten + w + "/" + h;
+			document.getElementById("placekitten").src=kitten;
+		</script>
+
 	</body>
 
 </html>

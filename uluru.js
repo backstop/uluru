@@ -1,16 +1,38 @@
  window.onload = function(){
-	console.log(window.performance.timing);
+	var uluru = "http://localhost:9999/beacon/"
+
+	var url = window.location.href;	
 
 	var connectionDelta = window.performance.timing.connectEnd - window.performance.timing.connectStart;
 
 	var responseDelta = window.performance.timing.responseEnd - window.performance.timing.responseStart;
 
-	var firstbyteDelta = window.performance.timing.responseStart - window.performance.timing.requestStart;
+	var firstByte = window.performance.timing.responseStart - window.performance.timing.requestStart;
 
-	console.log("Connection: " + connectionDelta);
-	console.log("Response: " + responseDelta);
-	console.log("First byte: " + firstbyteDelta);
+	var loadTime = new Date().getTime()  - window.performance.timing.navigationStart;
 
+	var statsMap = {};
+
+	statsMap["url"] = url;
+	statsMap["connectionTime"] = window.performance.timing.connectStart;
+	statsMap["connectionDelta"] = connectionDelta;
+	statsMap["responseDelta"] = responseDelta;
+	statsMap["firstByte"] = firstByte;
+	statsMap["loadTime"] = loadTime;
+
+	var statsJson = JSON.stringify(statsMap);
+
+	var http = new XMLHttpRequest();
+	http.open("POST", uluru, true);
+	http.setRequestHeader("Content-type", "application/json");
+	http.send(statsJson);
+
+	console.log("Url : " + statsMap["url"]);
+	console.log("Connection time: " + statsMap["connectionTime"])
+	console.log("Connection: " + statsMap["connectionDelta"]);
+	console.log("Response: " + statsMap["responseDelta"]);
+	console.log("First byte: " + statsMap["firstByte"]);
+	console.log("Load time: " + statsMap["loadTime"]);
 
 };
 
