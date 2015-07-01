@@ -4,12 +4,16 @@
 			Simple Uluru implementation
 		</title>
 		<script type="text/javascript" src="uluru.js"> </script>
+		<script type="text/javascript">
+			var endpoint = "localhost:9999/uluru/";
+			window.onload = function(){ uluru(endpoint);};
+		</script>
 	</head>
 	<body>
 		Blah blah blah here's some content.
 
 
-		Now I'll require a large image from a remote server so it takes a little bit of time to load.
+		Now I'll require a large image from a remote server so it takes a little bit of time to load. <br />
 
 		<img id = "placekitten">
 

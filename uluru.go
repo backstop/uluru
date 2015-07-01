@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	http.HandleFunc("/beacon/", func(w http.ResponseWriter, req *http.Request) {
+	http.HandleFunc("/uluru/", func(w http.ResponseWriter, req *http.Request) {
 
 		data, _ := ioutil.ReadAll(req.Body)
 
