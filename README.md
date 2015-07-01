@@ -2,7 +2,7 @@
 
 ![Uluru / Ayers Rock: a large sandstone rock formation in the southern part of the Northern Territory, in central Australia] (https://upload.wikimedia.org/wikipedia/commons/3/3e/Uluru_Panorama.jpg)
 
-A server for recieving web page timing information
+A light weight method by which web browser telemetry can be captured
 
 ## Motivation
 
