@@ -1,39 +1,47 @@
-var uluru = function(endpoint){
+function Uluru(endpoint, requestIdentifier) {
+    this.endpoint = endpoint;
+    this.requestIdentifier = requestIdentifier || 0;
+}
 
-    var url = window.location.href;
-
-    var connectionDelta = window.performance.timing.connectEnd - window.performance.timing.connectStart;
-
-    var responseDelta = window.performance.timing.responseEnd - window.performance.timing.responseStart;
-
-    var firstByte = window.performance.timing.responseStart - window.performance.timing.requestStart;
-
-    var loadTime = new Date().getTime()  - window.performance.timing.navigationStart;
-
-    var statsMap = {};
-
-    statsMap["url"] = url;
-    statsMap["connectionTime"] = window.performance.timing.connectStart;
-    statsMap["connectionDelta"] = connectionDelta;
-    statsMap["responseDelta"] = responseDelta;
-    statsMap["firstByte"] = firstByte;
-    statsMap["loadTime"] = loadTime;
-
-    var statsJson = JSON.stringify(statsMap);
-
-    if(window.performance.navigation.type != 2) {
-        var http = new XMLHttpRequest();
-        http.open("POST", endpoint, true);
-        http.setRequestHeader("Content-type", "application/json");
-        http.send(statsJson);
-    }
-
-    console.log("Url : " + statsMap["url"]);
-    console.log("Connection time: " + statsMap["connectionTime"]);
-    console.log("Connection: " + statsMap["connectionDelta"]);
-    console.log("Response: " + statsMap["responseDelta"]);
-    console.log("First byte: " + statsMap["firstByte"]);
-    console.log("Load time: " + statsMap["loadTime"]);
-
+Uluru.prototype.setDomContentLoaded = function (domContentLoaded) {
+    this.domContentLoaded = domContentLoaded;
 };
 
+Uluru.prototype.setLoadTime = function (loadTime) {
+    this.loadTime = loadTime;
+};
+
+Uluru.prototype.sendStats = function () {
+    var stats = {};
+
+    //This block collects data about resources (stylesheets, scripts, images, etc) downloaded as part of this request.
+    var resources = [];
+    var resourceStats = {};
+    if(!!window.performance.getEntries){
+        resources = window.performance.getEntries();
+        stats.resourceCount = resources.length;
+        resources.forEach(function(currentValue, index, array){
+            if (!resourceStats[currentValue.initiatorType]){
+                resourceStats[currentValue.initiatorType] = 0;
+            }
+            resourceStats[currentValue.initiatorType] += currentValue.duration;
+        });
+        stats.resourceStats = resourceStats;
+    }
+
+    stats.url = window.location.href;
+    stats.connectionTime = window.performance.timing.connectStart;
+    stats.connectionDelta = window.performance.timing.connectEnd - window.performance.timing.connectStart;
+    stats.responseDelta = window.performance.timing.responseEnd - window.performance.timing.responseStart;
+    stats.firstByte = window.performance.timing.responseStart - window.performance.timing.requestStart;
+    stats.domContentLoaded = this.domContentLoaded;
+    stats.loadTime = this.loadTime;
+    stats.requestIdentifier = this.requestIdentifier;
+
+    if(window.performance.navigation.type != window.performance.navigation.TYPE_BACK_FORWARD) {
+        var http = new XMLHttpRequest();
+        http.open("POST", this.endpoint, true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.send(JSON.stringify(stats));
+    }
+};
