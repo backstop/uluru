@@ -1,14 +1,14 @@
-function Uluru(endpoint, requestIdentifier) {
+function Uluru(endpoint, requestNumber) {
     this.endpoint = endpoint;
-    this.requestIdentifier = requestIdentifier || 0;
+    this.requestNumber = requestNumber;
 }
 
 Uluru.prototype.setDomContentLoaded = function (domContentLoaded) {
-    this.domContentLoaded = domContentLoaded;
+    this.domContentLoaded = Math.round(domContentLoaded);
 };
 
 Uluru.prototype.setLoadTime = function (loadTime) {
-    this.loadTime = loadTime;
+    this.loadTime = Math.round(loadTime);
 };
 
 Uluru.prototype.sendStats = function () {
@@ -24,19 +24,19 @@ Uluru.prototype.sendStats = function () {
             if (!resourceStats[currentValue.initiatorType]){
                 resourceStats[currentValue.initiatorType] = 0;
             }
-            resourceStats[currentValue.initiatorType] += currentValue.duration;
+            resourceStats[currentValue.initiatorType] += Math.round(currentValue.duration);
         });
         stats.resourceStats = resourceStats;
     }
 
     stats.url = window.location.href;
     stats.connectionTime = window.performance.timing.connectStart;
-    stats.connectionDelta = window.performance.timing.connectEnd - window.performance.timing.connectStart;
-    stats.responseDelta = window.performance.timing.responseEnd - window.performance.timing.responseStart;
-    stats.firstByte = window.performance.timing.responseStart - window.performance.timing.requestStart;
+    stats.connectionDelta = Math.round(window.performance.timing.connectEnd - window.performance.timing.connectStart);
+    stats.responseDelta = Math.round(window.performance.timing.responseEnd - window.performance.timing.responseStart);
+    stats.firstByte = Math.round(window.performance.timing.responseStart - window.performance.timing.requestStart);
     stats.domContentLoaded = this.domContentLoaded;
     stats.loadTime = this.loadTime;
-    stats.requestIdentifier = this.requestIdentifier;
+    stats.requestNumber = this.requestNumber;
 
     if(window.performance.navigation.type != window.performance.navigation.TYPE_BACK_FORWARD) {
         var http = new XMLHttpRequest();

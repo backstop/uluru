@@ -4,10 +4,16 @@
 			Simple Uluru implementation
 		</title>
 		<script type="text/javascript" src="uluru.js"> </script>
-		<script type="text/javascript">
-			var endpoint = "localhost:9999/uluru/";
-			window.onload = function(){ uluru(endpoint);};
-		</script>
+        <script type="text/javascript">
+            var pageUluru = new Uluru("http://path/to/uluru/");
+            document.addEventListener("DOMContentLoaded", function () {
+                pageUluru.setDomContentLoaded(new Date().getTime() - window.performance.timing.navigationStart);
+            });
+            window.onload = function(){
+                pageUluru.setLoadTime(new Date().getTime() - window.performance.timing.navigationStart);
+                pageUluru.sendStats();
+            };
+        </script>
 	</head>
 	<body>
 		Blah blah blah here's some content.
